@@ -21,8 +21,7 @@ def get_book_details():
     Prompts (via standard input) for the following fields:
     - title: required. The function will re-prompt until a non-empty title is provided.
     - author: optional. An empty string is allowed.
-    - publication year: optional. The function attempts to convert input to int; if conversion
-      fails the year defaults to 0 and a message is printed.
+    - publication year: required. The function re-prompts until the input can be converted to int.
 
     Returns:
         tuple[str, str, int]: A 3-tuple of (title, author, year).
@@ -38,12 +37,13 @@ def get_book_details():
 
     author = input("Enter author: ").strip()
 
-    year_input = input("Enter publication year: ").strip()
-    try:
-        year = int(year_input)
-    except ValueError:
-        print("Invalid year. Defaulting to 0.")
-        year = 0
+    while True:
+        year_input = input("Enter publication year: ").strip()
+        try:
+            year = int(year_input)
+            break
+        except ValueError:
+            print("Invalid year. Please enter a whole number.")
 
     return title, author, year
 

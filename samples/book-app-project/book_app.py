@@ -34,10 +34,11 @@ def handle_add():
     year_str = input("Year: ").strip()
 
     try:
-        year = int(year_str) if year_str else 0
-        collection.add_book(title, author, year)
+        collection.add_book(title, author, year_str)
         print("\nBook added successfully.\n")
     except ValueError as e:
+        print(f"\nError: {e}\n")
+    except RuntimeError as e:
         print(f"\nError: {e}\n")
 
 
@@ -45,16 +46,46 @@ def handle_remove():
     print("\nRemove a Book\n")
 
     title = input("Enter the title of the book to remove: ").strip()
-    collection.remove_book(title)
+    if not title:
+        print("\nError: title cannot be empty.\n")
+        return
 
-    print("\nBook removed if it existed.\n")
+    try:
+        removed = collection.remove_book(title)
+    except RuntimeError as e:
+        print(f"\nError: {e}\n")
+        return
+
+    if removed:
+        print("\nBook removed.\n")
+    else:
+        print("\nBook not found.\n")
 
 
 def handle_find():
     print("\nFind Books by Author\n")
 
     author = input("Author name: ").strip()
+    if not author:
+        print("\nError: author name cannot be empty.\n")
+        return
+
     books = collection.find_by_author(author)
+
+    show_books(books)
+
+
+def handle_find_year_range():
+    print("\nFind Books by Year Range\n")
+
+    start_year = input("Start year: ").strip()
+    end_year = input("End year: ").strip()
+
+    try:
+        books = collection.find_by_year_range(start_year, end_year)
+    except ValueError as e:
+        print(f"\nError: {e}\n")
+        return
 
     show_books(books)
 
@@ -68,6 +99,7 @@ Commands:
   add      - Add a new book
   remove   - Remove a book by title
   find     - Find books by author
+  find-year - Find books published within a year range
   help     - Show this help message
 """)
 
@@ -87,6 +119,8 @@ def main():
         handle_remove()
     elif command == "find":
         handle_find()
+    elif command in {"find-year", "search-year", "year-range"}:
+        handle_find_year_range()
     elif command == "help":
         show_help()
     else:

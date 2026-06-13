@@ -103,3 +103,6 @@ Desktop.ini
 demo-previews
 blog
 migration.md
+samples/book-app-project/.pytest-tmp*/
+
+
